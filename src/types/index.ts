@@ -1,12 +1,13 @@
 
-
-type statusOptions = 'active' | 'inactive'
+type typeOptions = 'favourite a bill' | 'un-favourite';
+type statusOptions = 'Current' | 'Withdrawn' | 'Enacted' | 'Rejected' | 'Defeated' | 'Lapsed';
 
 export type BillProps = {
-  billNumber: string;
-  billType: string;
+  bill_id: string;
+  bill_no: string;
+  billType: typeOptions;
   billStatus: statusOptions;
-  sponsor: string;
+  member_id: string;
   titleEnglish: string;
   titleGaeilge: string;
 }
