@@ -1,7 +1,7 @@
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { useBills } from '../hooks/useBills';
 import { type BillProps } from '../types/index';
-const BillTable = () => {
+export const BillTable = () => {
   const { data, error, isLoading } = useBills();
 
   if (isLoading) return <div>Loading...</div>;
@@ -33,4 +33,3 @@ const BillTable = () => {
   );
 };
 
-export default BillTable;
