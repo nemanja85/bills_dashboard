@@ -11,3 +11,14 @@ export type BillProps = {
   titleEnglish: string;
   titleGaeilge: string;
 }
+
+export type BillModalProps = {
+  open: boolean;
+  onClose: () => void;
+}
+
+export type PaginationProps = {
+  count: number;
+  page: number;
+  onChange: (event: React.ChangeEvent<unknown>, value: number) => void;
+}
