@@ -8,8 +8,20 @@ export type BillProps = {
   billType: typeOptions;
   billStatus: statusOptions;
   member_id: string;
-  titleEnglish: string;
-  titleGaeilge: string;
+  title: {
+    English:string;
+    Gaeilge: string;
+  }
+}
+
+export type BillResponseProps = {
+  results: {
+    bill: BillProps;
+  }[];
+}
+
+export type BillTableProps = {
+  onRowClick: (bill: BillProps) => void;
 }
 
 export type BillModalProps = {
@@ -20,5 +32,5 @@ export type BillModalProps = {
 export type PaginationProps = {
   count: number;
   page: number;
-  onChange: (event: React.ChangeEvent<unknown>, value: number) => void;
+  onClose: (event: React.ChangeEvent<unknown>, value: number) => void;
 }

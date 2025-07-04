@@ -10,7 +10,7 @@ import { type BillModalProps } from '../types';
 export const BillModal = ({ open, onClose }: BillModalProps) => {
   const [value, setValue] = useState(0);
 
-  const handleChange = (event: React.ChangeEvent, newValue: number) => {
+  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
   };
 
@@ -19,13 +19,12 @@ export const BillModal = ({ open, onClose }: BillModalProps) => {
       <Box
         sx={{ padding: 4, backgroundColor: 'white', margin: 'auto', marginTop: '10%', width: '90%', borderRadius: 4 }}
       >
-        // @ts-ignore
         <Tabs value={value} onChange={handleChange}>
           <Tab label="English" />
           <Tab label="Gaeilge" />
         </Tabs>
-        {value === 0 && <Typography variant="h4">bill.titleEnglish</Typography>}
-        {value === 1 && <Typography variant="h4">bill.titleGaeilge</Typography>}
+        {value === 0 && <Typography variant="h4">bill.shortTitleEn</Typography>}
+        {value === 1 && <Typography variant="h4">bill.shortTitleGa</Typography>}
       </Box>
     </Modal>
   );

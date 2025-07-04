@@ -1,9 +1,10 @@
 import axios from 'axios';
-import { type BillProps } from '../types';
+import { type BillProps, type BillResponseProps } from '../types';
 
-const API_URL = import.meta.env.REACT_APP_API_URL;
+const API_URL = import.meta.env.API_URL;
 
 export const fetchBills = async (): Promise<BillProps[]> => {
-  const response = await axios.get(`${API_URL}/legislation`);
-  return response.data;
+  const response = await axios.get<BillResponseProps>(`${API_URL}/legislation`);
+
+  return response.data.results.map(result => result.bill);
 };
