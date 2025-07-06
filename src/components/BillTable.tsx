@@ -21,7 +21,6 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
   if (isLoading) return <Typography>Loading Bills...</Typography>;
   if (error) return <Typography color="error">Error fetching bills: {error.message}</Typography>;
 
-
   const [isStarActive, setIsStarActive] = useState(true);
 
   const handleToggleStar = () => {
@@ -44,37 +43,37 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Bill Status</TableCell>
+              <TableCell>Icon</TableCell>
               <TableCell>Bill Number</TableCell>
               <TableCell>Bill Type</TableCell>
+              <TableCell>Bill Status</TableCell>
               <TableCell>Sponsor</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-          { data?.length === 0 ? (
+            {data?.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} align="center">
                   <Typography variant="subtitle1" color="textSecondary">
-                      No bills to display
+                    No bills to display
                   </Typography>
                 </TableCell>
               </TableRow>
-            ) : ( data?.map((bill) => (
-            <TableRow>
-              <TableCell>
-                <IconButton
-                  aria-label="star"
-                  onClick={handleToggleStar}
-                  disabled={!isStarActive}
-                >
-                  <StarIcon color={isStarActive ? 'success' : 'disabled'} />
-                </IconButton>
-              </TableCell>
-              <TableCell>{bill.bill_no}</TableCell>
-              <TableCell>{bill.billType}</TableCell>
-              <TableCell>{bill.member_id}</TableCell>
-            </TableRow>
-          )))}
+            ) : (
+              data?.map((bill) => (
+                <TableRow>
+                  <TableCell>
+                    <IconButton aria-label="star" onClick={handleToggleStar} disabled={!isStarActive}>
+                      <StarIcon color={isStarActive ? 'success' : 'disabled'} />
+                    </IconButton>
+                  </TableCell>
+                  <TableCell>{bill.bill_no}</TableCell>
+                  <TableCell>{bill.billType}</TableCell>
+                  <TableCell>{bill.bill_status}</TableCell>
+                  <TableCell>{bill.member_id}</TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </TableContainer>

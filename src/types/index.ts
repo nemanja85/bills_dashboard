@@ -13,7 +13,8 @@ export type BillProps = {
 	billType: TypeOptions;
 	bill_status: StatusOptions;
 	member_id: string;
-  longTitleEn: string,
+  shortTitleEn: string,
+  shortTitleGa: string,
 };
 
 export type GetBillsResponse = {
@@ -32,7 +33,7 @@ export type BillModalProps = {
 };
 
 export type PaginationProps = {
-	count: number;
+  limit: number;
 	page: number;
 	onChange: (event: React.ChangeEvent<unknown>, value: number) => void;
 };

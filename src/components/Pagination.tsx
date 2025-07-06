@@ -3,10 +3,10 @@ import { type PaginationProps } from "../types/index";
 
 /**
  *
- * @param {number} count
+ * @param {number} limit
  * @param {number} page
  * @param  {void} onChange
  */
-export const Pagination = ({ count, page, onChange }: PaginationProps) => {
-	return <MuiPagination count={count} page={page} onChange={onChange} />;
+export const Pagination = ({ limit, page, onChange }: PaginationProps) => {
+  return <MuiPagination count={limit} page={page} onChange={onChange} />;
 };

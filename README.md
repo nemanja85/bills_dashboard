@@ -29,7 +29,7 @@ npm install
 ### To start the project, use the following command:
 
 ```sh
-npm run dev dev
+npm run dev
 ```
 
 
