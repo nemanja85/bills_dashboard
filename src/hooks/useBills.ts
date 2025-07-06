@@ -1,9 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
-import { fetchBills } from '../utils/api';
-import { type BillProps } from '../types';
+import { useQuery } from "@tanstack/react-query";
+import { fetchBills } from "../utils/api";
 
 export const useBills = () => {
-  return useQuery<BillProps[], Error>(['bills'], fetchBills);
+	return useQuery({
+		queryKey: ["bills"],
+		queryFn: fetchBills,
+	});
 };
-
-
