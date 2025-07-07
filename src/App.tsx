@@ -22,7 +22,9 @@ function App() {
 		<Container>
 			<h1>Bill Information</h1>
 			<BillTable onRowClick={handleRowClick} />
-			{selectedBill && <BillModal open={modalOpen} onClose={handleCloseModal} />}
+			{selectedBill && (
+				<BillModal open={modalOpen} onClose={handleCloseModal} />
+			)}
 		</Container>
 	);
 }

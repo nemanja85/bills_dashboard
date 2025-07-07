@@ -9,7 +9,6 @@ import { type BillModalProps } from "../types";
  * @param {void} onClose
  */
 export const BillModal = ({ open, onClose }: BillModalProps) => {
-
 	const { data } = useBills();
 	const [value, setValue] = useState(0);
 
@@ -18,28 +17,32 @@ export const BillModal = ({ open, onClose }: BillModalProps) => {
 	};
 
 	return (
-    <Modal open={open} onClose={onClose}>
-      <Box
-        sx={{
-          padding: 4,
-          backgroundColor: 'white',
-          margin: 'auto',
-          marginTop: '20px',
-          width: '90%',
-          borderRadius: 4,
-        }}
-      >
-        <Tabs value={value} onChange={handleChange}>
-          <Tab label="English" />
-          <Tab label="Gaeilge" />
-        </Tabs>
-        {data?.map((bill) => (
-          <Fragment key={bill.bill_id}>
-            {value === 0 && <Typography variant="h4">{bill.shortTitleEn}</Typography>}
-            {value === 1 && <Typography variant="h4">{bill.shortTitleGa}</Typography>}
-          </Fragment>
-        ))}
-      </Box>
-    </Modal>
-  );
+		<Modal open={open} onClose={onClose}>
+			<Box
+				sx={{
+					padding: 4,
+					backgroundColor: "white",
+					margin: "auto",
+					marginTop: "20px",
+					width: "90%",
+					borderRadius: 4,
+				}}
+			>
+				<Tabs value={value} onChange={handleChange}>
+					<Tab label="English" />
+					<Tab label="Gaeilge" />
+				</Tabs>
+				{data?.map((bill) => (
+					<Fragment key={bill.bill_id}>
+						{value === 0 && (
+							<Typography variant="h4">{bill.shortTitleEn}</Typography>
+						)}
+						{value === 1 && (
+							<Typography variant="h4">{bill.shortTitleGa}</Typography>
+						)}
+					</Fragment>
+				))}
+			</Box>
+		</Modal>
+	);
 };

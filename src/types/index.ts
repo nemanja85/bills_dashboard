@@ -7,14 +7,22 @@ type StatusOptions =
 	| "Defeated"
 	| "Lapsed";
 
+type ShowOptions = {
+	showAs: null | string;
+};
+
+type SponsorOptions = {
+	as: ShowOptions;
+};
+
 export type BillProps = {
 	bill_id: string;
-	bill_no: string;
+	billNo: string;
 	billType: TypeOptions;
 	bill_status: StatusOptions;
-	member_id: string;
-  shortTitleEn: string,
-  shortTitleGa: string,
+	sponsors: SponsorOptions;
+	shortTitleEn: string;
+	shortTitleGa: string;
 };
 
 export type GetBillsResponse = {
@@ -32,8 +40,11 @@ export type BillModalProps = {
 	onClose: () => void;
 };
 
+type SizePaginationOptions = "small" | "medium" | "large";
+type ColorPaginationOptions = "primary" | "secondary" | "standard";
+
 export type PaginationProps = {
-  limit: number;
 	page: number;
-	onChange: (event: React.ChangeEvent<unknown>, value: number) => void;
+	color: ColorPaginationOptions;
+	size: SizePaginationOptions;
 };
