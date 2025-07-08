@@ -8,7 +8,7 @@ import { type BillModalProps } from "../types";
  * @param {boolean} open
  * @param {void} onClose
  */
-export const BillModal = ({ open, onClose }: BillModalProps) => {
+export const BillModal = ({ open, onClose, bill }: BillModalProps) => {
 	const { data } = useBills();
 	const [value, setValue] = useState(0);
 
@@ -21,7 +21,8 @@ export const BillModal = ({ open, onClose }: BillModalProps) => {
 			<Box
 				sx={{
 					padding: 4,
-					backgroundColor: "white",
+					backgroundColor: "#fff",
+					color: "#000",
 					margin: "auto",
 					marginTop: "20px",
 					width: "90%",
@@ -32,13 +33,17 @@ export const BillModal = ({ open, onClose }: BillModalProps) => {
 					<Tab label="English" />
 					<Tab label="Gaeilge" />
 				</Tabs>
-				{data?.map((bill) => (
-					<Fragment key={bill.bill_id}>
+				{data?.map((bill, index) => (
+					<Fragment key={index}>
 						{value === 0 && (
-							<Typography variant="h4">{bill.shortTitleEn}</Typography>
+							<Typography variant="body1" sx={{ mt: 2 }}>
+								{bill.shortTitleEn}
+							</Typography>
 						)}
 						{value === 1 && (
-							<Typography variant="h4">{bill.shortTitleGa}</Typography>
+							<Typography variant="body1" sx={{ mt: 2 }}>
+								{bill.shortTitleGa}
+							</Typography>
 						)}
 					</Fragment>
 				))}

@@ -1,4 +1,5 @@
 type TypeOptions = "favourite a bill" | "un-favourite";
+
 type StatusOptions =
 	| "Current"
 	| "Withdrawn"
@@ -6,6 +7,10 @@ type StatusOptions =
 	| "Rejected"
 	| "Defeated"
 	| "Lapsed";
+
+export type SponsorElement = {
+	sponsor: SponsorOptions;
+};
 
 type ShowOptions = {
 	showAs: null | string;
@@ -15,29 +20,30 @@ type SponsorOptions = {
 	as: ShowOptions;
 };
 
-export type BillProps = {
-	bill_id: string;
-	billNo: string;
-	billType: TypeOptions;
-	bill_status: StatusOptions;
-	sponsors: SponsorOptions;
-	shortTitleEn: string;
-	shortTitleGa: string;
-};
-
 export type GetBillsResponse = {
 	results: {
 		bill: BillProps;
 	}[];
 };
 
+export type BillProps = GetBillsResponse & {
+	bill_id: string;
+	billNo: string;
+	billType: TypeOptions;
+	bill_status: StatusOptions;
+	sponsors: SponsorElement[];
+	shortTitleEn: string;
+	shortTitleGa: string;
+};
+
 export type BillTableProps = {
-	onRowClick: (bill: BillProps) => void;
+	onRowClick: (bill: GetBillsResponse) => void;
 };
 
 export type BillModalProps = {
 	open: boolean;
 	onClose: () => void;
+	bill: GetBillsResponse | null;
 };
 
 type SizePaginationOptions = "small" | "medium" | "large";

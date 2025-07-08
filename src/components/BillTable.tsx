@@ -2,7 +2,11 @@ import StarIcon from "@mui/icons-material/Star";
 import {
 	Box,
 	Container,
+	FormControl,
+	InputLabel,
+	MenuItem,
 	Paper,
+	Select,
 	Table,
 	TableBody,
 	TableCell,
@@ -12,12 +16,49 @@ import {
 	Typography,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
+import { useMemo, useState } from "react";
 import { useBills } from "../hooks/useBills";
-import { type BillTableProps } from "../types";
+import { type BillTableProps, type GetBillsResponse } from "../types";
+import { BillModal } from "./BillModal";
 import { Pagination } from "./Pagination";
 
 export const BillTable = ({ onRowClick }: BillTableProps) => {
 	const { error, isLoading, data } = useBills();
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [selectedBill, setSelectedBill] = useState<GetBillsResponse | null>(
+		null,
+	);
+	const [filterStatus, setFilterStatus] = useState<string>("");
+
+	const handleRowClick = (bill: GetBillsResponse) => {
+		setSelectedBill(bill);
+		setIsModalOpen(true);
+		if (onRowClick) {
+			onRowClick(bill);
+		}
+	};
+
+	const handleCloseModal = () => {
+		setIsModalOpen(false);
+		setSelectedBill(null);
+	};
+
+	const handleFilterChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+		setFilterStatus(event.target.value as string);
+	};
+
+	const filteredBills = useMemo(() => {
+		if (!data) return [];
+		if (!filterStatus) return data;
+		return data.filter((bill) => bill.bill_status === filterStatus);
+	}, [data, filterStatus]);
+
+	const uniqueBillStatuses = useMemo(() => {
+		if (!data) return [];
+		const statuses = new Set<string>();
+		data.forEach((bill) => statuses.add(bill.bill_status));
+		return Array.from(statuses);
+	}, [data]);
 
 	if (isLoading) return <Typography>Loading Bills...</Typography>;
 	if (error)
@@ -29,15 +70,62 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 
 	return (
 		<Container>
+			<Box>
+				<FormControl sx={{ my: 5, minWidth: 200 }}>
+					<InputLabel id="bill-status-select-label">
+						Filter by Status
+					</InputLabel>
+					<Select
+						labelId="bill-status-select-label"
+						id="bill-status-select"
+						value={filterStatus}
+						label="Filter by Status"
+						//@ts-ignore
+						onChange={handleFilterChange}
+						sx={{
+							color: "#000",
+							"& .MuiOutlinedInput-notchedOutline": {
+								borderColor: "#000",
+							},
+							"& .MuiSvgIcon-root": {
+								color: "#000",
+							},
+							"&:hover .MuiOutlinedInput-notchedOutline": {
+								borderColor: "#000",
+							},
+							"&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+								borderColor: "#000",
+							},
+						}}
+						MenuProps={{
+							PaperProps: {
+								sx: {
+									backgroundColor: "GrayText",
+									color: "#000",
+								},
+							},
+						}}
+					>
+						<MenuItem value="">
+							<em>All Statuses</em>
+						</MenuItem>
+						{uniqueBillStatuses.map((status) => (
+							<MenuItem key={status} value={status}>
+								{status}
+							</MenuItem>
+						))}
+					</Select>
+				</FormControl>
+			</Box>
 			<Box
 				sx={{
 					padding: 1,
-					backgroundColor: "#03DAC6",
-					color: "#018786",
+					backgroundColor: "GrayText",
+					color: "#1565c0",
 					margin: "2px",
 					marginTop: "10px",
 					width: "90%",
-					borderRadius: 4,
+					borderRadius: 2,
 				}}
 			>
 				<TableContainer component={Paper}>
@@ -51,8 +139,8 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 								<TableCell>Sponsor</TableCell>
 							</TableRow>
 						</TableHead>
-						<TableBody>
-							{data?.length === 0 ? (
+						<TableBody sx={{ cursor: "pointer" }}>
+							{filteredBills?.length === 0 ? (
 								<TableRow>
 									<TableCell colSpan={5} align="center">
 										<Typography variant="subtitle1" color="textSecondary">
@@ -61,8 +149,11 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 									</TableCell>
 								</TableRow>
 							) : (
-								data?.map((bill, index) => (
-									<TableRow key={index}>
+								filteredBills?.map((bill, index) => (
+									<TableRow
+										key={bill.bill_id || index}
+										onClick={() => handleRowClick(bill)}
+									>
 										<TableCell>
 											<IconButton aria-label="star">
 												<StarIcon color="disabled" />
@@ -71,7 +162,11 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 										<TableCell>{bill.billNo}</TableCell>
 										<TableCell>{bill.billType}</TableCell>
 										<TableCell>{bill.bill_status}</TableCell>
-										<TableCell>bill.sponsors</TableCell>
+										<TableCell>
+											{bill.sponsors.map(
+												(sponsor) => sponsor.sponsor.as.showAs,
+											)}
+										</TableCell>
 									</TableRow>
 								))
 							)}
@@ -89,6 +184,11 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 			>
 				<Pagination page={2} color="standard" size="large" />
 			</Box>
+			<BillModal
+				open={isModalOpen}
+				onClose={handleCloseModal}
+				bill={selectedBill} // Pass the selected bill to the modal
+			/>
 		</Container>
 	);
 };
