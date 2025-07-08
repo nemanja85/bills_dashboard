@@ -9,14 +9,21 @@
 
 ```sh
   nvm install 20
-  nvm use 20
   ```
+
+```sh
+  nvm use 20
+```
+
 
 ### Alternatively, you could go for the latest 22.x.x version:
 
 ```sh
   nvm install 22
-  nvm use 22
+  ```
+
+```sh
+   nvm use 22
   ```
 
 
