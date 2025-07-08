@@ -3,10 +3,10 @@ import { type PaginationProps } from "../types/index";
 
 /**
  *
- * @param {number} page
+ * @param {number} count
  * @param {string} size
  * @param {string} color
  */
-export const Pagination = ({ page, size, color }: PaginationProps) => {
-	return <MuiPagination page={page} size={size} color={color} />;
+export const Pagination = ({ count, size, color }: PaginationProps) => {
+	return <MuiPagination count={count} size={size} color={color} />;
 };

@@ -52,7 +52,7 @@ type SizePaginationOptions = "small" | "medium" | "large";
 type ColorPaginationOptions = "primary" | "secondary" | "standard";
 
 export type PaginationProps = {
-	page: number;
+	count: number;
 	color: ColorPaginationOptions;
 	size: SizePaginationOptions;
 };

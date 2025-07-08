@@ -201,12 +201,12 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 					marginTop: "50px",
 				}}
 			>
-				<Pagination page={2} color="standard" size="large" />
+				<Pagination count={3} color="standard" size="large" />
 			</Box>
 			<BillModal
 				open={isModalOpen}
 				onClose={handleCloseModal}
-				bill={selectedBill} // Pass the selected bill to the modal
+				bill={selectedBill}
 			/>
 		</Container>
 	);
