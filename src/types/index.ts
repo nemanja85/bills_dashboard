@@ -33,7 +33,9 @@ export type BillProps = GetBillsResponse & {
 	bill_status: StatusOptions;
 	sponsors: SponsorElement[];
 	shortTitleEn: string;
+	longTitleEn: string;
 	shortTitleGa: string;
+	longTitleGa: string;
 };
 
 export type BillTableProps = {

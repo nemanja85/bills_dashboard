@@ -20,13 +20,17 @@ export const BillModal = ({ open, onClose, bill }: BillModalProps) => {
 		<Modal open={open} onClose={onClose}>
 			<Box
 				sx={{
+					position: "relative",
+					top: "50%",
+					transform: "translateY(-50%)",
 					padding: 4,
 					backgroundColor: "#fff",
 					color: "#000",
 					margin: "auto",
 					marginTop: "20px",
-					width: "90%",
-					borderRadius: 4,
+					width: "55%",
+					height: "50vh",
+					"overflow-y": "auto",
 				}}
 			>
 				<Tabs value={value} onChange={handleChange}>
@@ -37,12 +41,14 @@ export const BillModal = ({ open, onClose, bill }: BillModalProps) => {
 					<Fragment key={index}>
 						{value === 0 && (
 							<Typography variant="body1" sx={{ mt: 2 }}>
-								{bill.shortTitleEn}
+								<h2>{bill.shortTitleEn}</h2>
+								<div dangerouslySetInnerHTML={{ __html: bill.longTitleEn }} />
 							</Typography>
 						)}
 						{value === 1 && (
 							<Typography variant="body1" sx={{ mt: 2 }}>
-								{bill.shortTitleGa}
+								<h2>{bill.shortTitleGa}</h2>
+								<div dangerouslySetInnerHTML={{ __html: bill.longTitleGa }} />
 							</Typography>
 						)}
 					</Fragment>
