@@ -33,21 +33,28 @@ export const BillModal = ({ open, onClose, bill }: BillModalProps) => {
 					"overflow-y": "auto",
 				}}
 			>
-				<Tabs value={value} onChange={handleChange}>
-					<Tab label="English" />
+				<Tabs
+					sx={{ "border-bottom": "1px solid #2196f3", marginBottom: "30px" }}
+					value={value}
+					onChange={handleChange}
+				>
+					<Tab
+						sx={{ "border-right": "1px solid #2196f3", marginRight: "5px" }}
+						label="English"
+					/>
 					<Tab label="Gaeilge" />
 				</Tabs>
 				{data?.map((bill, index) => (
 					<Fragment key={index}>
 						{value === 0 && (
 							<Typography variant="body1" sx={{ mt: 2 }}>
-								<h2>{bill.shortTitleEn}</h2>
+								<h3 style={{ color: "#1883ef" }}>{bill.shortTitleEn}</h3>
 								<div dangerouslySetInnerHTML={{ __html: bill.longTitleEn }} />
 							</Typography>
 						)}
 						{value === 1 && (
 							<Typography variant="body1" sx={{ mt: 2 }}>
-								<h2>{bill.shortTitleGa}</h2>
+								<h3 style={{ color: "#1883ef" }}>{bill.shortTitleGa}</h3>
 								<div dangerouslySetInnerHTML={{ __html: bill.longTitleGa }} />
 							</Typography>
 						)}

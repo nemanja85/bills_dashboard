@@ -100,9 +100,10 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 						MenuProps={{
 							PaperProps: {
 								sx: {
-									backgroundColor: "#fff",
-									color: "#000",
-									border: "1px solid #000",
+									fontSize: "16px",
+									fontWeight: "bold",
+									backgroundColor: "#2196f3",
+									color: "white",
 								},
 							},
 						}}
@@ -139,30 +140,74 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 			<Box
 				sx={{
 					padding: 1,
-					backgroundColor: "GrayText",
+					backgroundColor: "#2196f3",
 					color: "#1565c0",
-					margin: "2px",
 					marginTop: "10px",
-					width: "90%",
+					width: "100%",
 					borderRadius: 2,
 				}}
 			>
 				<TableContainer component={Paper}>
 					<Table>
 						<TableHead>
-							<TableRow>
-								<TableCell>Icon</TableCell>
-								<TableCell>Bill Number</TableCell>
-								<TableCell>Bill Type</TableCell>
-								<TableCell>Bill Status</TableCell>
-								<TableCell>Sponsor</TableCell>
+							<TableRow sx={{ width: "100%", backgroundColor: "#1883ef" }}>
+								<TableCell
+									sx={{
+										fontSize: "16px",
+										fontWeight: "bold",
+										letterSpacing: "0.05em",
+										color: "white",
+									}}
+								>
+									Icon
+								</TableCell>
+								<TableCell
+									sx={{
+										fontSize: "16px",
+										fontWeight: "bold",
+										letterSpacing: "0.05em",
+										color: "white",
+									}}
+								>
+									Bill Number
+								</TableCell>
+								<TableCell
+									sx={{
+										fontSize: "16px",
+										fontWeight: "bold",
+										letterSpacing: "0.05em",
+										color: "white",
+									}}
+								>
+									Bill Type
+								</TableCell>
+								<TableCell
+									sx={{
+										fontSize: "16px",
+										fontWeight: "bold",
+										letterSpacing: "0.05em",
+										color: "white",
+									}}
+								>
+									Bill Status
+								</TableCell>
+								<TableCell
+									sx={{
+										fontSize: "16px",
+										fontWeight: "bold",
+										letterSpacing: "0.05em",
+										color: "white",
+									}}
+								>
+									Sponsor
+								</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody sx={{ cursor: "pointer" }}>
 							{filteredBills?.length === 0 ? (
-								<TableRow>
+								<TableRow sx={{ backgroundColor: "#bce0fb" }}>
 									<TableCell colSpan={5} align="center">
-										<Typography variant="subtitle1" color="textSecondary">
+										<Typography variant="h5" color="error">
 											No bills to display
 										</Typography>
 									</TableCell>
@@ -170,18 +215,25 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 							) : (
 								filteredBills?.map((bill, index) => (
 									<TableRow
+										sx={{ backgroundColor: "#bce0fb" }}
 										key={bill.bill_id || index}
 										onClick={() => handleRowClick(bill)}
 									>
-										<TableCell>
+										<TableCell sx={{ borderBottom: "1px solid #1883ef" }}>
 											<IconButton aria-label="star">
 												<StarIcon color="disabled" />
 											</IconButton>
 										</TableCell>
-										<TableCell>{bill.billNo}</TableCell>
-										<TableCell>{bill.billType}</TableCell>
-										<TableCell>{bill.bill_status}</TableCell>
-										<TableCell>
+										<TableCell sx={{ borderBottom: "1px solid #1883ef" }}>
+											{bill.billNo}
+										</TableCell>
+										<TableCell sx={{ borderBottom: "1px solid #1883ef" }}>
+											{bill.billType}
+										</TableCell>
+										<TableCell sx={{ borderBottom: "1px solid #1883ef" }}>
+											{bill.bill_status}
+										</TableCell>
+										<TableCell sx={{ borderBottom: "1px solid #1883ef" }}>
 											{bill.sponsors.map(
 												(sponsor) => sponsor.sponsor.as.showAs,
 											)}
@@ -201,7 +253,7 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 					marginTop: "50px",
 				}}
 			>
-				<Pagination count={3} color="standard" size="large" />
+				<Pagination count={3} color="primary" size="large" />
 			</Box>
 			<BillModal
 				open={isModalOpen}
