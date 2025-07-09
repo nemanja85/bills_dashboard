@@ -1,5 +1,3 @@
-type TypeOptions = "favourite a bill" | "un-favourite";
-
 type StatusOptions =
 	| "Current"
 	| "Withdrawn"
@@ -29,7 +27,7 @@ export type GetBillsResponse = {
 export type BillProps = GetBillsResponse & {
 	bill_id: string;
 	billNo: string;
-	billType: TypeOptions;
+	billType: string;
 	bill_status: StatusOptions;
 	sponsors: SponsorElement[];
 	shortTitleEn: string;
@@ -40,6 +38,12 @@ export type BillProps = GetBillsResponse & {
 
 export type BillTableProps = {
 	onRowClick: (bill: GetBillsResponse) => void;
+};
+
+export type BillFavoriteProps = {
+	event: React.MouseEvent<HTMLButtonElement>;
+	billId: string;
+	isFavorited: boolean;
 };
 
 export type BillModalProps = {
