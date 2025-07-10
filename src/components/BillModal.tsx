@@ -3,11 +3,6 @@ import { Fragment, useState } from "react";
 import { useBills } from "../hooks/useBills";
 import { type BillModalProps } from "../types";
 
-/**
- *
- * @param {boolean} open
- * @param {void} onClose
- */
 export const BillModal = ({ open, onClose, bill }: BillModalProps) => {
 	const { data } = useBills();
 	const [value, setValue] = useState(0);
@@ -44,18 +39,22 @@ export const BillModal = ({ open, onClose, bill }: BillModalProps) => {
 					/>
 					<Tab label="Gaeilge" />
 				</Tabs>
-				{data?.map((bill, index) => (
-					<Fragment key={index}>
+				{data?.bills.map((bill) => (
+					<Fragment key={bill.act.actNo}>
 						{value === 0 && (
 							<Typography variant="body1" sx={{ mt: 2 }}>
-								<h3 style={{ color: "#1883ef" }}>{bill.shortTitleEn}</h3>
-								<div dangerouslySetInnerHTML={{ __html: bill.longTitleEn }} />
+								<h3 style={{ color: "#1883ef" }}>{bill.act.shortTitleEn}</h3>
+								<div
+									dangerouslySetInnerHTML={{ __html: bill.act.shortTitleGa }}
+								/>
 							</Typography>
 						)}
 						{value === 1 && (
 							<Typography variant="body1" sx={{ mt: 2 }}>
-								<h3 style={{ color: "#1883ef" }}>{bill.shortTitleGa}</h3>
-								<div dangerouslySetInnerHTML={{ __html: bill.longTitleGa }} />
+								<h3 style={{ color: "#1883ef" }}>{bill.act.shortTitleGa}</h3>
+								<div
+									dangerouslySetInnerHTML={{ __html: bill.act.longTitleGa }}
+								/>
 							</Typography>
 						)}
 					</Fragment>

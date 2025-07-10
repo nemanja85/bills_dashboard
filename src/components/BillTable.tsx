@@ -34,6 +34,7 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 	const [selectedBill, setSelectedBill] = useState<GetBillsResponse | null>(
 		null,
 	);
+
 	const [filterStatus, setFilterStatus] = useState<string>("");
 	const [favoritedBills, setFavoritedBills] = useState<Set<string>>(new Set());
 	const [currentTab, setCurrentTab] = useState(0);
@@ -46,29 +47,31 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 		}
 	};
 
+	const counts = data?.head.counts.billCount;
+
 	const handleCloseModal = () => {
 		setIsModalOpen(false);
 		setSelectedBill(null);
 	};
 
 	const handleFilterChange = (event: React.ChangeEvent<{ value: string }>) => {
-		setFilterStatus(event.target.value as string);
+		setFilterStatus(event.target.value);
 	};
 
 	const handleToggleFavorite = ({
 		event,
-		billId,
+		bill_id,
 		isFavorited,
 	}: BillFavoriteProps) => {
 		event.stopPropagation();
 
 		const newFavoritedBills = new Set(favoritedBills);
 		if (isFavorited) {
-			newFavoritedBills.delete(billId);
-			console.log(`Un-favouriting a bill ID: ${billId}`);
+			newFavoritedBills.delete(bill_id);
+			console.log(`Un-favouriting a bill ID: ${bill_id}`);
 		} else {
-			newFavoritedBills.add(billId);
-			console.log(`Favouriting a bill with ID: ${billId}`);
+			newFavoritedBills.add(bill_id);
+			console.log(`Favouriting a bill with ID: ${bill_id}`);
 		}
 		setFavoritedBills(newFavoritedBills);
 	};
@@ -76,7 +79,7 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 	const filteredBills = useMemo(() => {
 		if (!data) return [];
 
-		let billsDisplay = data;
+		let billsDisplay = data.bills;
 
 		if (filterStatus) {
 			billsDisplay = billsDisplay.filter((bill) =>
@@ -90,9 +93,9 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 	const uniqueBillStatuses = useMemo(() => {
 		if (!data) return [];
 		const statuses = new Set<string>();
-		data.forEach((bill) => statuses.add(bill.bill_status));
+		data.bills.forEach((bill) => statuses.add(bill.status));
 		return Array.from(statuses);
-	}, [data]);
+	}, [data?.bills]);
 
 	const handleTabChange = (newValue: number) => {
 		setCurrentTab(newValue);
@@ -175,7 +178,7 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
               <p>Defeated</p>
             </MenuItem>
             <MenuItem value="Lapsed">
-              <p>Defeated</p>
+              <p>Lapsed</p>
             </MenuItem>
             {uniqueBillStatuses.map((status) => (
               <MenuItem key={status} value={status}>
@@ -270,16 +273,22 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
                       onClick={() => handleRowClick(bill)}
                     >
                       <TableCell sx={{ borderBottom: '1px solid #1883ef' }}>
-                        <IconButton aria-label="star">
-                          {(e: React.MouseEvent<HTMLButtonElement>) =>
-                            handleToggleFavorite(e, bill.bill_id, isFavorited)
+                        <IconButton
+                          aria-label="star"
+                          onClick={(e) =>
+                            handleToggleFavorite({
+                              event: e,
+                              bill_id: bill.billNo,
+                              isFavorited: isFavorited,
+                            })
                           }
+                        >
                           <StarIcon color={isFavorited ? 'success' : 'disabled'} />
                         </IconButton>
                       </TableCell>
                       <TableCell sx={{ borderBottom: '1px solid #1883ef' }}>{bill.billNo}</TableCell>
                       <TableCell sx={{ borderBottom: '1px solid #1883ef' }}>{bill.billType}</TableCell>
-                      <TableCell sx={{ borderBottom: '1px solid #1883ef' }}>{bill.bill_status}</TableCell>
+                      <TableCell sx={{ borderBottom: '1px solid #1883ef' }}>{bill.status}</TableCell>
                       <TableCell sx={{ borderBottom: '1px solid #1883ef' }}>
                         {bill.sponsors.map((sponsor) => sponsor.sponsor.as.showAs)}
                       </TableCell>
@@ -299,7 +308,7 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
           marginTop: '50px',
         }}
       >
-        <Pagination count={3} color="primary" size="large" />
+        <Pagination count={counts} color="primary" size="large" />
       </Box>
       <BillModal open={isModalOpen} onClose={handleCloseModal} bill={selectedBill} />
     </Container>

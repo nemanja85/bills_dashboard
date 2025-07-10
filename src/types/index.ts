@@ -18,7 +18,18 @@ type SponsorOptions = {
 	as: ShowOptions;
 };
 
+type Act = {
+	actNo: string;
+	shortTitleEn: string;
+	longTitleEn: string;
+	shortTitleGa: string;
+	longTitleGa: string;
+};
+
 export type GetBillsResponse = {
+	head: {
+		counts: BillCounts;
+	};
 	results: {
 		bill: BillProps;
 	}[];
@@ -28,12 +39,14 @@ export type BillProps = GetBillsResponse & {
 	bill_id: string;
 	billNo: string;
 	billType: string;
-	bill_status: StatusOptions;
+	status: StatusOptions;
 	sponsors: SponsorElement[];
 	shortTitleEn: string;
 	longTitleEn: string;
 	shortTitleGa: string;
 	longTitleGa: string;
+	limit: number;
+	act: Act;
 };
 
 export type BillTableProps = {
@@ -42,7 +55,7 @@ export type BillTableProps = {
 
 export type BillFavoriteProps = {
 	event: React.MouseEvent<HTMLButtonElement>;
-	billId: string;
+	bill_id: string;
 	isFavorited: boolean;
 };
 
@@ -52,11 +65,12 @@ export type BillModalProps = {
 	bill: GetBillsResponse | null;
 };
 
-type SizePaginationOptions = "small" | "medium" | "large";
-type ColorPaginationOptions = "primary" | "secondary" | "standard";
-
-export type PaginationProps = {
-	count: number;
-	color: ColorPaginationOptions;
-	size: SizePaginationOptions;
+export type BillCounts = {
+	billCount: number;
+	resultCount: number;
 };
+
+export type FetchedBillsData = {
+	bills: BillProps[];
+	head: GetBillsResponse['head'];
+}

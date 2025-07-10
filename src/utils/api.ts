@@ -1,9 +1,9 @@
 import axios from "axios";
-import { type BillProps, type GetBillsResponse } from "../types";
+import { type FetchedBillsData, type GetBillsResponse } from "../types";
 
-const API_URL = import.meta.env.VITE_API_URL as string;
+const API_URL = import.meta.env.VITE_API_URL;
 
-export const fetchBills = async (): Promise<BillProps[]> => {
+export const fetchBills = async (): Promise<FetchedBillsData> => {
 	const response = await axios.get<GetBillsResponse>(
 		`${API_URL}/v1/legislation`,
 		{
@@ -13,5 +13,8 @@ export const fetchBills = async (): Promise<BillProps[]> => {
 		},
 	);
 
-	return response.data.results.map((result) => result.bill);
+	const bills = response.data.results.map((result) => result.bill);
+	const head = response.data.head;
+
+	return { bills, head };
 };
