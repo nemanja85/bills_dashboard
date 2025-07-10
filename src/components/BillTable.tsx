@@ -18,7 +18,7 @@ import {
   Typography,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useBills } from "../hooks/useBills";
 import {
   type BillFavoriteProps,
@@ -28,6 +28,24 @@ import {
 import { BillModal } from "./BillModal";
 import { Pagination } from "./Pagination";
 
+// --- Mock API Call  ---
+const mockUpdateFavoriteStatus = async (
+	bill_id: string,
+	isFavorited: boolean,
+) => {
+	return new Promise<void>((resolve) => {
+		setTimeout(() => {
+			console.log(
+				`[MOCK SERVER]: ${
+					isFavorited ? "Un-favourite" : "Favourite"
+				} bill with ID: ${bill_id}`,
+			);
+			resolve();
+		}, 200);
+	});
+};
+// --- End Mock API Call ---
+
 export const BillTable = ({ onRowClick }: BillTableProps) => {
 	const { error, isLoading, data } = useBills();
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,8 +54,27 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 	);
 
 	const [filterStatus, setFilterStatus] = useState<string>("");
-	const [favoritedBills, setFavoritedBills] = useState<Set<string>>(new Set());
 	const [currentTab, setCurrentTab] = useState(0);
+	const [favoritedBills, setFavoritedBills] = useState<Set<string>>(() => {
+		try {
+			const storedFavorites = localStorage.getItem("favoritedBills");
+			return storedFavorites ? new Set(JSON.parse(storedFavorites)) : new Set();
+		} catch (e) {
+			console.error("Failed to load favorited bills from localStorage", e);
+			return new Set();
+		}
+	});
+
+	useEffect(() => {
+		try {
+			localStorage.setItem(
+				"favoritedBills",
+				JSON.stringify(Array.from(favoritedBills)),
+			);
+		} catch (e) {
+			console.error("Failed to favorited bills", e);
+		}
+	}, [favoritedBills]);
 
 	const handleRowClick = (bill: GetBillsResponse) => {
 		setSelectedBill(bill);
@@ -46,8 +83,10 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 			onRowClick(bill);
 		}
 	};
+  const RECORDS_PER_PAGE = 50;
+  const totalBillCount = data?.head.counts.billCount || 0;
+  const totalPages = Math.ceil(totalBillCount / RECORDS_PER_PAGE);
 
-	const counts = data?.head.counts.billCount;
 
 	const handleCloseModal = () => {
 		setIsModalOpen(false);
@@ -58,7 +97,7 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 		setFilterStatus(event.target.value);
 	};
 
-	const handleToggleFavorite = ({
+	const handleToggleFavorite = async ({
 		event,
 		bill_id,
 		isFavorited,
@@ -68,12 +107,17 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 		const newFavoritedBills = new Set(favoritedBills);
 		if (isFavorited) {
 			newFavoritedBills.delete(bill_id);
-			console.log(`Un-favouriting a bill ID: ${bill_id}`);
 		} else {
 			newFavoritedBills.add(bill_id);
-			console.log(`Favouriting a bill with ID: ${bill_id}`);
 		}
 		setFavoritedBills(newFavoritedBills);
+
+
+		try {
+			await mockUpdateFavoriteStatus(bill_id, isFavorited);
+		} catch (error) {
+			console.error("Failed to update favorite status:", error);
+		}
 	};
 
 	const filteredBills = useMemo(() => {
@@ -119,8 +163,7 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
           sx={{ 'border-bottom': '1px solid #2196f3', marginBottom: '30px' }}
           aria-label="bill table tabs"
         >
-          <Tab sx={{ 'border-right': '1px solid #2196f3', marginRight: '5px' }} label="Favorited Bills" />
-          <Tab label="Un-favorited Bills" />
+          <Tab label="Favorited Bills" />
         </Tabs>
       </Box>
       <Box>
@@ -308,7 +351,7 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
           marginTop: '50px',
         }}
       >
-        <Pagination count={counts} color="primary" size="large" />
+        <Pagination count={totalPages} variant="outlined" shape="rounded" color="primary" size="large" />
       </Box>
       <BillModal open={isModalOpen} onClose={handleCloseModal} bill={selectedBill} />
     </Container>

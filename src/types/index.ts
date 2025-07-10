@@ -6,12 +6,12 @@ type StatusOptions =
 	| "Defeated"
 	| "Lapsed";
 
-export type SponsorElement = {
-	sponsor: SponsorOptions;
-};
-
 type ShowOptions = {
 	showAs: null | string;
+};
+
+export type SponsorElement = {
+	sponsor: SponsorOptions;
 };
 
 type SponsorOptions = {
@@ -72,5 +72,5 @@ export type BillCounts = {
 
 export type FetchedBillsData = {
 	bills: BillProps[];
-	head: GetBillsResponse['head'];
-}
+	head: GetBillsResponse["head"];
+};

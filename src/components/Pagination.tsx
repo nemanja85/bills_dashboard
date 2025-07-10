@@ -1,16 +1,15 @@
 import { Pagination as MuiPagination } from "@mui/material";
-import { type BillCounts } from "../types";
 type SizePaginationOptions = "small" | "medium" | "large";
 type ColorPaginationOptions = "primary" | "secondary" | "standard";
 
 type PaginationProps = {
-	counts?: BillCounts;
-	color: ColorPaginationOptions;
-	size: SizePaginationOptions;
+  count: number;
+  variant: 'outlined' | undefined;
+  shape: 'rounded' | undefined;
+  color: ColorPaginationOptions;
+  size: SizePaginationOptions;
 };
 
-export const Pagination = ({ counts, size, color }: PaginationProps) => {
-	return (
-		<MuiPagination count={counts?.billCount} size={size} color={color} />
-	);
+export const Pagination = ({ count, variant, shape, size, color }: PaginationProps) => {
+	return <MuiPagination count={count} variant={variant} shape={shape} size={size} color={color} />;
 };
