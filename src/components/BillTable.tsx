@@ -158,7 +158,7 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 					value={currentTab}
 					//@ts-ignore
 					onChange={handleTabChange}
-					sx={{ "border-bottom": "1px solid #2196f3", marginBottom: "30px" }}
+					sx={{ "border-bottom": "1px solid #2196f3", "margin-bottom": "30px" }}
 					aria-label="bill table tabs"
 				>
 					<Tab label="Favorited Bills" />
