@@ -41,7 +41,6 @@ export type BillProps = GetBillsResponse & {
 	billType: string;
 	status: StatusOptions;
 	sponsors: SponsorElement[];
-	limit?: number;
 	act: Act;
 };
 

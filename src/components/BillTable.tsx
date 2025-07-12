@@ -83,6 +83,7 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 			onRowClick(bill);
 		}
 	};
+
 	const RECORDS_PER_PAGE = 50;
 	const totalBillCount = data?.head.counts.billCount || 0;
 	const totalPages = Math.ceil(totalBillCount / RECORDS_PER_PAGE);

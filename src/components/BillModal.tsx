@@ -3,7 +3,7 @@ import { Fragment, useState } from "react";
 import { useBills } from "../hooks/useBills";
 import { type BillModalProps } from "../types";
 
-export const BillModal = ({ open, onClose, bill }: BillModalProps) => {
+export const BillModal = ({ open, onClose }: BillModalProps) => {
 	const { data } = useBills();
 	const [value, setValue] = useState(0);
 
