@@ -8,6 +8,8 @@ type PaginationProps = {
 	shape: "rounded" | undefined;
 	color: ColorPaginationOptions;
 	size: SizePaginationOptions;
+	page: number;
+	onChange: (event: React.ChangeEvent, value: string) => void
 };
 
 export const Pagination = ({
@@ -16,14 +18,19 @@ export const Pagination = ({
 	shape,
 	size,
 	color,
+	page,
+	onChange
 }: PaginationProps) => {
 	return (
 		<MuiPagination
 			count={count}
+			page={page}
 			variant={variant}
 			shape={shape}
 			size={size}
 			color={color}
+			//@ts-ignore
+			onChange={onChange}
 		/>
 	);
 };
