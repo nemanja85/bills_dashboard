@@ -115,4 +115,50 @@ export const MOCK_FAVORITE_BILLS = [
 			longTitleGa: "Is é seo cur síos fada Gaeilge eile don dara sampla gnímh.",
 		},
 	},
+	{
+		bill_id: "8",
+		billNo: "3",
+		billType: "Public",
+		status: "Enacted",
+		sponsors: [
+			{
+				sponsor: {
+					as: {
+						showAs: "Sen. John Smith",
+					},
+				},
+			},
+		],
+		act: {
+			actNo: "8",
+			shortTitleEn: "Sample English Act Title 2",
+			shortTitleGa: "Teideal Gníomh Samplach Gaeilge 2",
+			longTitleEn:
+				"This is another long English description for the second sample act.",
+			longTitleGa: "Is é seo cur síos fada Gaeilge eile don dara sampla gnímh.",
+		},
+	},
+	{
+		bill_id: "8",
+		billNo: "121",
+		billType: "Public",
+		status: "Enacted",
+		sponsors: [
+			{
+				sponsor: {
+					as: {
+						showAs: "Sen. John Smith",
+					},
+				},
+			},
+		],
+		act: {
+			actNo: "8",
+			shortTitleEn: "Sample English Act Title 2",
+			shortTitleGa: "Teideal Gníomh Samplach Gaeilge 2",
+			longTitleEn:
+				"This is another long English description for the second sample act.",
+			longTitleGa: "Is é seo cur síos fada Gaeilge eile don dara sampla gnímh.",
+		},
+	},
 ];

@@ -85,7 +85,7 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 		}
 	};
 
-	const RECORDS_PER_PAGE = 50;
+	const RECORDS_PER_PAGE = 10;
 	const totalBillCount = data?.head.counts.billCount || 0;
 	const totalPages = Math.ceil(totalBillCount / RECORDS_PER_PAGE);
 
@@ -122,19 +122,21 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 	};
 
 	const filteredBills = useMemo(() => {
-    if (!data) return [];
+		if (!data) return [];
 
-    let billsDisplay = data.bills;
+		let billsDisplay = data.bills;
 
-    if (filterStatus) {
-      billsDisplay = billsDisplay.filter((bill) => favoritedBills.has(bill.bill_id));
-    }
+		if (filterStatus) {
+			billsDisplay = billsDisplay.filter((bill) =>
+				favoritedBills.has(bill.bill_id),
+			);
+		}
 
-    const startIndex = (currentPage - 1) * RECORDS_PER_PAGE;
-    const endIndex = startIndex + RECORDS_PER_PAGE;
+		const startIndex = (currentPage - 1) * RECORDS_PER_PAGE;
+		const endIndex = startIndex + RECORDS_PER_PAGE;
 
-    return billsDisplay.slice(startIndex, endIndex);
-  }, [data, filterStatus, currentTab, favoritedBills]);
+		return billsDisplay.slice(startIndex, endIndex);
+	}, [data, filterStatus, currentTab, favoritedBills, currentPage]);
 
 	const uniqueBillStatuses = useMemo(() => {
 		if (!data) return [];
@@ -148,10 +150,8 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 	};
 
 	const handlePageChange = (event: ChangeEvent, value: number) => {
-    setCurrentPage(value);
-		console.log("Current page is ", value);
-
-  };
+		setCurrentPage(value);
+	};
 
 	if (isLoading) return <Typography>Loading Bills...</Typography>;
 	if (error)
@@ -162,214 +162,231 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 		);
 
 	return (
-    <Container>
-      <Box>
-        <Tabs
-          value={currentTab}
-          //@ts-ignore
-          onChange={handleTabChange}
-          sx={{ 'border-bottom': '1px solid #2196f3', 'margin-bottom': '30px' }}
-          aria-label="bill table tabs"
-        >
-          <Tab label="Favorited Bills" />
-        </Tabs>
-      </Box>
-      <Box>
-        <FormControl sx={{ my: 5, minWidth: 200 }}>
-          <InputLabel id="bill-status-select-label">Filter by Status</InputLabel>
-          <Select
-            labelId="bill-status-select-label"
-            id="bill-status-select"
-            value={filterStatus}
-            label="Filter by Status"
-            //@ts-ignore
-            onChange={handleFilterChange}
-            sx={{
-              color: '#2196f3',
-              '& .MuiOutlinedInput-notchedOutline': {
-                borderColor: '#2196f3',
-              },
-              '& .MuiSvgIcon-root': {
-                color: '#2196f3',
-              },
-              '&:hover .MuiOutlinedInput-notchedOutline': {
-                borderColor: '2196f3',
-              },
-              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                borderColor: '2196f3',
-              },
-            }}
-            MenuProps={{
-              PaperProps: {
-                sx: {
-                  fontSize: '16px',
-                  fontWeight: 'bold',
-                  backgroundColor: '#2196f3',
-                  color: 'white',
-                },
-              },
-            }}
-          >
-            <MenuItem value="">
-              <em>All Statuses</em>
-            </MenuItem>
-            <MenuItem value="Current">
-              <p>Current</p>
-            </MenuItem>
-            <MenuItem value="Withdrawn">
-              <p>Withdrawn</p>
-            </MenuItem>
-            <MenuItem value="Enacted">
-              <p>Enacted</p>
-            </MenuItem>
-            <MenuItem value="Rejected">
-              <p>Rejected</p>
-            </MenuItem>
-            <MenuItem value="Defeated">
-              <p>Defeated</p>
-            </MenuItem>
-            <MenuItem value="Lapsed">
-              <p>Lapsed</p>
-            </MenuItem>
-            {uniqueBillStatuses.map((status) => (
-              <MenuItem key={status} value={status}>
-                {status}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Box>
-      <Box
-        sx={{
-          padding: 1,
-          backgroundColor: '#2196f3',
-          color: '#1565c0',
-          marginTop: '10px',
-          width: '100%',
-          borderRadius: 2,
-        }}
-      >
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow sx={{ width: '100%', backgroundColor: '#1883ef' }}>
-                <TableCell
-                  sx={{
-                    fontSize: '16px',
-                    fontWeight: 'bold',
-                    letterSpacing: '0.05em',
-                    color: 'white',
-                  }}
-                >
-                  Icon
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontSize: '16px',
-                    fontWeight: 'bold',
-                    letterSpacing: '0.05em',
-                    color: 'white',
-                  }}
-                >
-                  Bill Number
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontSize: '16px',
-                    fontWeight: 'bold',
-                    letterSpacing: '0.05em',
-                    color: 'white',
-                  }}
-                >
-                  Bill Type
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontSize: '16px',
-                    fontWeight: 'bold',
-                    letterSpacing: '0.05em',
-                    color: 'white',
-                  }}
-                >
-                  Bill Status
-                </TableCell>
-                <TableCell
-                  sx={{
-                    fontSize: '16px',
-                    fontWeight: 'bold',
-                    letterSpacing: '0.05em',
-                    color: 'white',
-                  }}
-                >
-                  Sponsor
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody sx={{ cursor: 'pointer' }}>
-              {filteredBills?.length === 0 ? (
-                <TableRow sx={{ backgroundColor: '#bce0fb' }}>
-                  <TableCell colSpan={5} align="center">
-                    <Typography variant="h5" color="error">
-                      No bills to display
-                    </Typography>
-                  </TableCell>
-                </TableRow>
-              ) : (
-                filteredBills?.map((bill, index) => {
-                  const isFavorited = favoritedBills.has(bill.bill_id);
-                  return (
-                    <TableRow
-                      sx={{ backgroundColor: '#bce0fb' }}
-                      key={bill.bill_id || index}
-                      onClick={() => handleRowClick(bill)}
-                    >
-                      <TableCell sx={{ borderBottom: '1px solid #1883ef' }}>
-                        <IconButton
-                          aria-label="star"
-                          onClick={(e) =>
-                            handleToggleFavorite({
-                              event: e,
-                              bill_id: bill.billNo,
-                              isFavorited: isFavorited,
-                            })
-                          }
-                        >
-                          <StarIcon color={isFavorited ? 'success' : 'disabled'} />
-                        </IconButton>
-                      </TableCell>
-                      <TableCell sx={{ borderBottom: '1px solid #1883ef' }}>{bill.billNo}</TableCell>
-                      <TableCell sx={{ borderBottom: '1px solid #1883ef' }}>{bill.billType}</TableCell>
-                      <TableCell sx={{ borderBottom: '1px solid #1883ef' }}>{bill.status}</TableCell>
-                      <TableCell sx={{ borderBottom: '1px solid #1883ef' }}>
-                        {bill.sponsors.map((sponsor) => sponsor.sponsor.as.showAs)}
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          width: '100%',
-          marginTop: '50px',
-        }}
-      >
-        <Pagination
-          count={totalPages}
-          page={currentPage}
-          onChange={handlePageChange}
-          variant="outlined"
-          shape="rounded"
-          color="primary"
-          size="large"
-        />
-      </Box>
-      <BillModal open={isModalOpen} onClose={handleCloseModal} bill={selectedBill} />
-    </Container>
-  );
+		<Container>
+			<Box>
+				<Tabs
+					value={currentTab}
+					//@ts-ignore
+					onChange={handleTabChange}
+					sx={{ "border-bottom": "1px solid #2196f3", "margin-bottom": "30px" }}
+					aria-label="bill table tabs"
+				>
+					<Tab label="Favorited Bills" />
+				</Tabs>
+			</Box>
+			<Box>
+				<FormControl sx={{ my: 5, minWidth: 200 }}>
+					<InputLabel id="bill-status-select-label">
+						Filter by Status
+					</InputLabel>
+					<Select
+						labelId="bill-status-select-label"
+						id="bill-status-select"
+						value={filterStatus}
+						label="Filter by Status"
+						//@ts-ignore
+						onChange={handleFilterChange}
+						sx={{
+							color: "#2196f3",
+							"& .MuiOutlinedInput-notchedOutline": {
+								borderColor: "#2196f3",
+							},
+							"& .MuiSvgIcon-root": {
+								color: "#2196f3",
+							},
+							"&:hover .MuiOutlinedInput-notchedOutline": {
+								borderColor: "2196f3",
+							},
+							"&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+								borderColor: "2196f3",
+							},
+						}}
+						MenuProps={{
+							PaperProps: {
+								sx: {
+									fontSize: "16px",
+									fontWeight: "bold",
+									backgroundColor: "#2196f3",
+									color: "white",
+								},
+							},
+						}}
+					>
+						<MenuItem value="">
+							<em>All Statuses</em>
+						</MenuItem>
+						<MenuItem value="Current">
+							<p>Current</p>
+						</MenuItem>
+						<MenuItem value="Withdrawn">
+							<p>Withdrawn</p>
+						</MenuItem>
+						<MenuItem value="Enacted">
+							<p>Enacted</p>
+						</MenuItem>
+						<MenuItem value="Rejected">
+							<p>Rejected</p>
+						</MenuItem>
+						<MenuItem value="Defeated">
+							<p>Defeated</p>
+						</MenuItem>
+						<MenuItem value="Lapsed">
+							<p>Lapsed</p>
+						</MenuItem>
+						{uniqueBillStatuses.map((status) => (
+							<MenuItem key={status} value={status}>
+								{status}
+							</MenuItem>
+						))}
+					</Select>
+				</FormControl>
+			</Box>
+			<Box
+				sx={{
+					padding: 1,
+					backgroundColor: "#2196f3",
+					color: "#1565c0",
+					marginTop: "10px",
+					width: "100%",
+					borderRadius: 2,
+				}}
+			>
+				<TableContainer component={Paper}>
+					<Table>
+						<TableHead>
+							<TableRow sx={{ width: "100%", backgroundColor: "#1883ef" }}>
+								<TableCell
+									sx={{
+										fontSize: "16px",
+										fontWeight: "bold",
+										letterSpacing: "0.05em",
+										color: "white",
+									}}
+								>
+									Icon
+								</TableCell>
+								<TableCell
+									sx={{
+										fontSize: "16px",
+										fontWeight: "bold",
+										letterSpacing: "0.05em",
+										color: "white",
+									}}
+								>
+									Bill Number
+								</TableCell>
+								<TableCell
+									sx={{
+										fontSize: "16px",
+										fontWeight: "bold",
+										letterSpacing: "0.05em",
+										color: "white",
+									}}
+								>
+									Bill Type
+								</TableCell>
+								<TableCell
+									sx={{
+										fontSize: "16px",
+										fontWeight: "bold",
+										letterSpacing: "0.05em",
+										color: "white",
+									}}
+								>
+									Bill Status
+								</TableCell>
+								<TableCell
+									sx={{
+										fontSize: "16px",
+										fontWeight: "bold",
+										letterSpacing: "0.05em",
+										color: "white",
+									}}
+								>
+									Sponsor
+								</TableCell>
+							</TableRow>
+						</TableHead>
+						<TableBody sx={{ cursor: "pointer" }}>
+							{filteredBills?.length === 0 ? (
+								<TableRow sx={{ backgroundColor: "#bce0fb" }}>
+									<TableCell colSpan={5} align="center">
+										<Typography variant="h5" color="error">
+											No bills to display
+										</Typography>
+									</TableCell>
+								</TableRow>
+							) : (
+								filteredBills?.map((bill, index) => {
+									const isFavorited = favoritedBills.has(bill.bill_id);
+									return (
+										<TableRow
+											sx={{ backgroundColor: "#bce0fb" }}
+											key={bill.bill_id || index}
+											onClick={() => handleRowClick(bill)}
+										>
+											<TableCell sx={{ borderBottom: "1px solid #1883ef" }}>
+												<IconButton
+													aria-label="star"
+													onClick={(e) =>
+														handleToggleFavorite({
+															event: e,
+															bill_id: bill.billNo,
+															isFavorited: isFavorited,
+														})
+													}
+												>
+													<StarIcon
+														color={isFavorited ? "success" : "disabled"}
+													/>
+												</IconButton>
+											</TableCell>
+											<TableCell sx={{ borderBottom: "1px solid #1883ef" }}>
+												{bill.billNo}
+											</TableCell>
+											<TableCell sx={{ borderBottom: "1px solid #1883ef" }}>
+												{bill.billType}
+											</TableCell>
+											<TableCell sx={{ borderBottom: "1px solid #1883ef" }}>
+												{bill.status}
+											</TableCell>
+											<TableCell sx={{ borderBottom: "1px solid #1883ef" }}>
+												{bill.sponsors.map(
+													(sponsor) => sponsor.sponsor.as.showAs,
+												)}
+											</TableCell>
+										</TableRow>
+									);
+								})
+							)}
+						</TableBody>
+					</Table>
+				</TableContainer>
+			</Box>
+			<Box
+				sx={{
+					display: "flex",
+					justifyContent: "center",
+					width: "100%",
+					marginTop: "50px",
+				}}
+			>
+				<Pagination
+					count={totalPages}
+					page={currentPage}
+					//@ts-ignore
+					onChange={handlePageChange}
+					variant="outlined"
+					shape="rounded"
+					color="primary"
+					size="large"
+				/>
+			</Box>
+			<BillModal
+				open={isModalOpen}
+				onClose={handleCloseModal}
+				bill={selectedBill}
+			/>
+		</Container>
+	);
 };

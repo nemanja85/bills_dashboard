@@ -9,7 +9,7 @@ type PaginationProps = {
 	color: ColorPaginationOptions;
 	size: SizePaginationOptions;
 	page: number;
-	onChange: (event: React.ChangeEvent, value: string) => void
+	onChange: (event: React.ChangeEvent, value: string) => void;
 };
 
 export const Pagination = ({
@@ -19,7 +19,7 @@ export const Pagination = ({
 	size,
 	color,
 	page,
-	onChange
+	onChange,
 }: PaginationProps) => {
 	return (
 		<MuiPagination
