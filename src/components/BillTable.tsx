@@ -18,7 +18,13 @@ import {
 	Typography,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
-import React, { useEffect, useMemo, useState, type ChangeEvent } from "react";
+import React, {
+	Fragment,
+	useEffect,
+	useMemo,
+	useState,
+	type ChangeEvent,
+} from "react";
 import { useBills } from "../hooks/useBills";
 import {
 	type BillFavoriteProps,
@@ -30,15 +36,13 @@ import { Pagination } from "./Pagination";
 
 // --- Mock API Call  ---
 const mockUpdateFavoriteStatus = async (
-	bill_id: string,
+	billNo: string,
 	isFavorited: boolean,
 ) => {
 	return new Promise<void>((resolve) => {
 		setTimeout(() => {
 			console.log(
-				`[MOCK SERVER]: ${
-					isFavorited ? "Un-favourite" : "Favourite"
-				} bill with ID: ${bill_id}`,
+				`[MOCK SERVER]: ${isFavorited ? "Un-favourite" : "Favourite"} bill with ID: ${billNo}`,
 			);
 			resolve();
 		}, 200);
@@ -54,6 +58,7 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 	);
 
 	const [filterStatus, setFilterStatus] = useState<string>("");
+	// 0: All Bills, 1: Favorited Bills
 	const [currentTab, setCurrentTab] = useState(0);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [favoritedBills, setFavoritedBills] = useState<Set<string>>(() => {
@@ -73,7 +78,7 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 				JSON.stringify(Array.from(favoritedBills)),
 			);
 		} catch (e) {
-			console.error("Failed to favorited bills", e);
+			console.error("Failed to save favorited bills", e);
 		}
 	}, [favoritedBills]);
 
@@ -86,8 +91,6 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 	};
 
 	const RECORDS_PER_PAGE = 10;
-	const totalBillCount = data?.head.counts.billCount || 0;
-	const totalPages = Math.ceil(totalBillCount / RECORDS_PER_PAGE);
 
 	const handleCloseModal = () => {
 		setIsModalOpen(false);
@@ -98,55 +101,73 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 		setFilterStatus(event.target.value);
 		setCurrentPage(1);
 	};
-
 	const handleToggleFavorite = async ({
 		event,
-		bill_id,
+		billNo,
 		isFavorited,
 	}: BillFavoriteProps) => {
 		event.stopPropagation();
 
 		const newFavoritedBills = new Set(favoritedBills);
-		if (isFavorited) {
-			newFavoritedBills.delete(bill_id);
-		} else {
-			newFavoritedBills.add(bill_id);
-		}
+
+		isFavorited
+			? newFavoritedBills.delete(billNo)
+			: newFavoritedBills.add(billNo);
+
 		setFavoritedBills(newFavoritedBills);
 
 		try {
-			await mockUpdateFavoriteStatus(bill_id, isFavorited);
+			await mockUpdateFavoriteStatus(billNo, isFavorited);
 		} catch (error) {
 			console.error("Failed to update favorite status:", error);
 		}
 	};
 
-	const filteredBills = useMemo(() => {
-		if (!data) return [];
+	const allBills = useMemo(() => {
+		return data?.bills || [];
+	}, [data]);
 
-		let billsDisplay = data.bills;
+	const favoritedBillsData = useMemo(() => {
+		return allBills.filter((bill) => favoritedBills.has(bill.billNo));
+	}, [allBills, favoritedBills]);
 
-		if (filterStatus) {
-			billsDisplay = billsDisplay.filter((bill) =>
-				favoritedBills.has(bill.bill_id),
-			);
+	const filteredAndTabbedBills = useMemo(() => {
+		let billsToDisplay = [];
+
+		if (currentTab === 0) {
+			billsToDisplay = allBills;
+		} else if (currentTab === 1) {
+			billsToDisplay = favoritedBillsData;
 		}
 
+		if (filterStatus) {
+			billsToDisplay = billsToDisplay.filter(
+				(bill) => bill.status === filterStatus,
+			);
+		}
+		return billsToDisplay;
+	}, [allBills, favoritedBillsData, currentTab, filterStatus]);
+
+	const totalBillCount = filteredAndTabbedBills.length;
+	const totalPages = Math.ceil(totalBillCount / RECORDS_PER_PAGE);
+
+	const paginatedBills = useMemo(() => {
 		const startIndex = (currentPage - 1) * RECORDS_PER_PAGE;
 		const endIndex = startIndex + RECORDS_PER_PAGE;
-
-		return billsDisplay.slice(startIndex, endIndex);
-	}, [data, filterStatus, currentTab, favoritedBills, currentPage]);
+		return filteredAndTabbedBills.slice(startIndex, endIndex);
+	}, [filteredAndTabbedBills, currentPage, RECORDS_PER_PAGE]);
 
 	const uniqueBillStatuses = useMemo(() => {
 		if (!data) return [];
 		const statuses = new Set<string>();
 		data.bills.forEach((bill) => statuses.add(bill.status));
-		return Array.from(statuses);
+		return Array.from(statuses).sort();
 	}, [data?.bills]);
 
-	const handleTabChange = (newValue: number) => {
+	const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
 		setCurrentTab(newValue);
+		setFilterStatus("");
+		setCurrentPage(1);
 	};
 
 	const handlePageChange = (event: ChangeEvent, value: number) => {
@@ -166,11 +187,11 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 			<Box>
 				<Tabs
 					value={currentTab}
-					//@ts-ignore
 					onChange={handleTabChange}
 					sx={{ "border-bottom": "1px solid #2196f3", "margin-bottom": "30px" }}
 					aria-label="bill table tabs"
 				>
+					<Tab label="All Bills" />
 					<Tab label="Favorited Bills" />
 				</Tabs>
 			</Box>
@@ -214,24 +235,6 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 					>
 						<MenuItem value="">
 							<em>All Statuses</em>
-						</MenuItem>
-						<MenuItem value="Current">
-							<p>Current</p>
-						</MenuItem>
-						<MenuItem value="Withdrawn">
-							<p>Withdrawn</p>
-						</MenuItem>
-						<MenuItem value="Enacted">
-							<p>Enacted</p>
-						</MenuItem>
-						<MenuItem value="Rejected">
-							<p>Rejected</p>
-						</MenuItem>
-						<MenuItem value="Defeated">
-							<p>Defeated</p>
-						</MenuItem>
-						<MenuItem value="Lapsed">
-							<p>Lapsed</p>
 						</MenuItem>
 						{uniqueBillStatuses.map((status) => (
 							<MenuItem key={status} value={status}>
@@ -308,7 +311,7 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 							</TableRow>
 						</TableHead>
 						<TableBody sx={{ cursor: "pointer" }}>
-							{filteredBills?.length === 0 ? (
+							{paginatedBills?.length === 0 ? (
 								<TableRow sx={{ backgroundColor: "#bce0fb" }}>
 									<TableCell colSpan={5} align="center">
 										<Typography variant="h5" color="error">
@@ -317,8 +320,8 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 									</TableCell>
 								</TableRow>
 							) : (
-								filteredBills?.map((bill, index) => {
-									const isFavorited = favoritedBills.has(bill.bill_id);
+								paginatedBills?.map((bill, index) => {
+									const isFavorited = favoritedBills.has(bill.billNo);
 									return (
 										<TableRow
 											sx={{ backgroundColor: "#bce0fb" }}
@@ -331,7 +334,7 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 													onClick={(e) =>
 														handleToggleFavorite({
 															event: e,
-															bill_id: bill.billNo,
+															billNo: bill.billNo,
 															isFavorited: isFavorited,
 														})
 													}
@@ -351,9 +354,9 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 												{bill.status}
 											</TableCell>
 											<TableCell sx={{ borderBottom: "1px solid #1883ef" }}>
-												{bill.sponsors.map(
-													(sponsor) => sponsor.sponsor.as.showAs,
-												)}
+												{bill.sponsors
+													.map((sponsor) => sponsor.sponsor.as.showAs)
+													.join(", ")}{" "}
 											</TableCell>
 										</TableRow>
 									);
@@ -363,30 +366,34 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 					</Table>
 				</TableContainer>
 			</Box>
-			<Box
-				sx={{
-					display: "flex",
-					justifyContent: "center",
-					width: "100%",
-					marginTop: "50px",
-				}}
-			>
-				<Pagination
-					count={totalPages}
-					page={currentPage}
-					//@ts-ignore
-					onChange={handlePageChange}
-					variant="outlined"
-					shape="rounded"
-					color="primary"
-					size="large"
-				/>
-			</Box>
-			<BillModal
-				open={isModalOpen}
-				onClose={handleCloseModal}
-				bill={selectedBill}
-			/>
+			{paginatedBills.length > 0 && (
+				<Fragment>
+					<Box
+						sx={{
+							display: "flex",
+							justifyContent: "center",
+							width: "100%",
+							marginTop: "50px",
+						}}
+					>
+						<Pagination
+							count={totalPages}
+							page={currentPage}
+							// @ts-ignore
+							onChange={handlePageChange}
+							variant="outlined"
+							shape="rounded"
+							color="primary"
+							size="large"
+						/>
+					</Box>
+					<BillModal
+						open={isModalOpen}
+						onClose={handleCloseModal}
+						bill={selectedBill}
+					/>
+				</Fragment>
+			)}
 		</Container>
 	);
 };

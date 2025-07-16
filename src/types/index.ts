@@ -50,7 +50,7 @@ export type BillTableProps = {
 
 export type BillFavoriteProps = {
 	event: React.MouseEvent<HTMLButtonElement>;
-	bill_id: string;
+	billNo: string;
 	isFavorited: boolean;
 };
 
