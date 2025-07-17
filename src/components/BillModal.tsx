@@ -3,6 +3,22 @@ import { Fragment, useState } from "react";
 import { useBills } from "../hooks/useBills";
 import { type BillModalProps } from "../types";
 
+const modal = {
+	position: "relative",
+	top: "50%",
+	transform: "translateY(-50%)",
+	padding: 4,
+	bgcolor: "#fff",
+	border: "2px solid #000",
+	boxShadow: 24,
+	color: "#000",
+	margin: "auto",
+	marginTop: "20px",
+	width: "55%",
+	height: "50vh",
+	"overflow-y": "auto",
+};
+
 export const BillModal = ({ open, onClose }: BillModalProps) => {
 	const { data } = useBills();
 	const [value, setValue] = useState(0);
@@ -13,21 +29,7 @@ export const BillModal = ({ open, onClose }: BillModalProps) => {
 
 	return (
 		<Modal open={open} onClose={onClose}>
-			<Box
-				sx={{
-					position: "relative",
-					top: "50%",
-					transform: "translateY(-50%)",
-					padding: 4,
-					backgroundColor: "#fff",
-					color: "#000",
-					margin: "auto",
-					marginTop: "20px",
-					width: "55%",
-					height: "50vh",
-					"overflow-y": "auto",
-				}}
-			>
+			<Box sx={{ ...modal }}>
 				<Tabs
 					sx={{ "border-bottom": "1px solid #2196f3", marginBottom: "30px" }}
 					value={value}

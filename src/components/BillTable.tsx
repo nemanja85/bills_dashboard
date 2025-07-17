@@ -34,6 +34,45 @@ import {
 import { BillModal } from "./BillModal";
 import { Pagination } from "./Pagination";
 
+const tabs = {
+	"border-bottom": "1px solid #2196f3",
+	"margin-bottom": "30px",
+};
+
+const tableContainer = {
+	padding: 1,
+	backgroundColor: "#2196f3",
+	color: "#1565c0",
+	marginTop: "10px",
+	width: "100%",
+	borderRadius: 2,
+};
+
+const headTableCell = {
+	fontSize: "16px",
+	fontWeight: "bold",
+	letterSpacing: "0.05em",
+	color: "white",
+};
+
+const bodyTableCell = {
+	borderBottom: "1px solid #1883ef",
+};
+
+const menuFilter = {
+	fontSize: "16px",
+	fontWeight: "bold",
+	backgroundColor: "#2196f3",
+	color: "white",
+};
+
+const paginationContainer = {
+	display: "flex",
+	justifyContent: "center",
+	width: "100%",
+	marginTop: "50px",
+};
+
 // --- Mock API Call  ---
 const mockUpdateFavoriteStatus = async (
 	billNo: string,
@@ -188,7 +227,7 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 				<Tabs
 					value={currentTab}
 					onChange={handleTabChange}
-					sx={{ "border-bottom": "1px solid #2196f3", "margin-bottom": "30px" }}
+					sx={{ ...tabs }}
 					aria-label="bill table tabs"
 				>
 					<Tab label="All Bills" />
@@ -224,12 +263,7 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 						}}
 						MenuProps={{
 							PaperProps: {
-								sx: {
-									fontSize: "16px",
-									fontWeight: "bold",
-									backgroundColor: "#2196f3",
-									color: "white",
-								},
+								sx: { ...menuFilter },
 							},
 						}}
 					>
@@ -244,70 +278,16 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 					</Select>
 				</FormControl>
 			</Box>
-			<Box
-				sx={{
-					padding: 1,
-					backgroundColor: "#2196f3",
-					color: "#1565c0",
-					marginTop: "10px",
-					width: "100%",
-					borderRadius: 2,
-				}}
-			>
+			<Box sx={{ ...tableContainer }}>
 				<TableContainer component={Paper}>
 					<Table>
 						<TableHead>
 							<TableRow sx={{ width: "100%", backgroundColor: "#1883ef" }}>
-								<TableCell
-									sx={{
-										fontSize: "16px",
-										fontWeight: "bold",
-										letterSpacing: "0.05em",
-										color: "white",
-									}}
-								>
-									Icon
-								</TableCell>
-								<TableCell
-									sx={{
-										fontSize: "16px",
-										fontWeight: "bold",
-										letterSpacing: "0.05em",
-										color: "white",
-									}}
-								>
-									Bill Number
-								</TableCell>
-								<TableCell
-									sx={{
-										fontSize: "16px",
-										fontWeight: "bold",
-										letterSpacing: "0.05em",
-										color: "white",
-									}}
-								>
-									Bill Type
-								</TableCell>
-								<TableCell
-									sx={{
-										fontSize: "16px",
-										fontWeight: "bold",
-										letterSpacing: "0.05em",
-										color: "white",
-									}}
-								>
-									Bill Status
-								</TableCell>
-								<TableCell
-									sx={{
-										fontSize: "16px",
-										fontWeight: "bold",
-										letterSpacing: "0.05em",
-										color: "white",
-									}}
-								>
-									Sponsor
-								</TableCell>
+								<TableCell sx={{ ...headTableCell }}>Icon</TableCell>
+								<TableCell sx={{ ...headTableCell }}>Bill Number</TableCell>
+								<TableCell sx={{ ...headTableCell }}>Bill Type</TableCell>
+								<TableCell sx={{ ...headTableCell }}>Bill Status</TableCell>
+								<TableCell sx={{ ...headTableCell }}>Sponsor</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody sx={{ cursor: "pointer" }}>
@@ -344,16 +324,16 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 													/>
 												</IconButton>
 											</TableCell>
-											<TableCell sx={{ borderBottom: "1px solid #1883ef" }}>
+											<TableCell sx={{ ...bodyTableCell }}>
 												{bill.billNo}
 											</TableCell>
-											<TableCell sx={{ borderBottom: "1px solid #1883ef" }}>
+											<TableCell sx={{ ...bodyTableCell }}>
 												{bill.billType}
 											</TableCell>
-											<TableCell sx={{ borderBottom: "1px solid #1883ef" }}>
+											<TableCell sx={{ ...bodyTableCell }}>
 												{bill.status}
 											</TableCell>
-											<TableCell sx={{ borderBottom: "1px solid #1883ef" }}>
+											<TableCell sx={{ ...bodyTableCell }}>
 												{bill.sponsors
 													.map((sponsor) => sponsor.sponsor.as.showAs)
 													.join(", ")}{" "}
@@ -368,14 +348,7 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 			</Box>
 			{paginatedBills.length > 0 && (
 				<Fragment>
-					<Box
-						sx={{
-							display: "flex",
-							justifyContent: "center",
-							width: "100%",
-							marginTop: "50px",
-						}}
-					>
+					<Box sx={{ ...paginationContainer }}>
 						<Pagination
 							count={totalPages}
 							page={currentPage}
