@@ -23,7 +23,7 @@ export const BillModal = ({ open, onClose }: BillModalProps) => {
 	const { data } = useBills();
 	const [value, setValue] = useState(0);
 
-	const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+	const handleChange = (_: React.ChangeEvent<{}>, newValue: number) => {
 		setValue(newValue);
 	};
 

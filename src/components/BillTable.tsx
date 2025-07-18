@@ -30,6 +30,7 @@ import {
 	type BillFavoriteProps,
 	type BillTableProps,
 	type GetBillsResponse,
+	type BillProps,
 } from "../types";
 import { BillModal } from "./BillModal";
 import { Pagination } from "./Pagination";
@@ -171,7 +172,7 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 	}, [allBills, favoritedBills]);
 
 	const filteredAndTabbedBills = useMemo(() => {
-		let billsToDisplay = [];
+		let billsToDisplay: BillProps[] = [];
 
 		if (currentTab === 0) {
 			billsToDisplay = allBills;
@@ -203,13 +204,13 @@ export const BillTable = ({ onRowClick }: BillTableProps) => {
 		return Array.from(statuses).sort();
 	}, [data?.bills]);
 
-	const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+	const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
 		setCurrentTab(newValue);
 		setFilterStatus("");
 		setCurrentPage(1);
 	};
 
-	const handlePageChange = (event: ChangeEvent, value: number) => {
+	const handlePageChange = (_: ChangeEvent, value: number) => {
 		setCurrentPage(value);
 	};
 
